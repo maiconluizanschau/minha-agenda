@@ -190,7 +190,6 @@
     </Dialog>
   </div>
 </template>
-
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref } from 'vue';
 import { useToast } from 'primevue/usetoast';
@@ -249,8 +248,17 @@ const contatosFiltrados = computed(() => {
 async function carregar() {
   try {
     carregando.value = true;
-    const { data } = await api.get<Contato[]>('/contatos');
-    contatos.value = data;
+    const { data } = await api.get('/contatos');
+
+    //Normaliza o formato vindo do backend
+    contatos.value = (data as any[]).map((c) => ({
+      id: c.id ?? c.contatoId ?? c.idContato,
+      nome: c.nome ?? c.Nome,
+      email: c.email ?? c.Email,
+      telefone: c.telefone ?? c.Telefone,
+      observacoes: c.observacoes ?? c.Observacoes ?? '',
+      favorito: c.favorito ?? c.isFavorite ?? c.ehFavorito ?? false
+    }));
   } catch (err: any) {
     toast.add({
       severity: 'error',
@@ -303,8 +311,22 @@ async function excluirContato(contato: Contato) {
 
 async function alternarFavorito(contato: Contato) {
   if (!contato.id) return;
+
   try {
-    const payload = { ...contato, favorito: !contato.favorito };
+    const novoValor = !contato.favorito;
+
+    // Monta payload robusto com vários nomes de campo possíveis
+    const payload: any = {
+      id: contato.id,
+      nome: contato.nome,
+      email: contato.email,
+      telefone: contato.telefone,
+      observacoes: contato.observacoes,
+      favorito: novoValor,
+      isFavorite: novoValor,
+      ehFavorito: novoValor
+    };
+
     await api.put(`/contatos/${contato.id}`, payload);
     await carregar();
   } catch (err: any) {
@@ -318,15 +340,25 @@ async function alternarFavorito(contato: Contato) {
 
 async function salvar() {
   try {
+    const payload: any = {
+      nome: form.nome,
+      email: form.email,
+      telefone: form.telefone,
+      observacoes: form.observacoes,
+      favorito: form.favorito,
+      isFavorite: form.favorito,
+      ehFavorito: form.favorito
+    };
+
     if (editingId.value) {
-      await api.put(`/contatos/${editingId.value}`, form);
+      await api.put(`/contatos/${editingId.value}`, payload);
       toast.add({
         severity: 'success',
         summary: 'Contato atualizado',
         life: 2000
       });
     } else {
-      await api.post('/contatos', form);
+      await api.post('/contatos', payload);
       toast.add({
         severity: 'success',
         summary: 'Contato criado',

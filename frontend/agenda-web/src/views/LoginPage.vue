@@ -63,24 +63,33 @@ const loading = ref(false);
 
 async function onSubmit() {
   loading.value = true;
+
+  // 1) Primeiro tentamos logar
   try {
     await auth.login(username.value, password.value);
-    toast.add({
-      severity: 'success',
-      summary: 'Login realizado',
-      life: 2000
-    });
-    router.push({ name: 'contatos' });
   } catch (err: any) {
+    // Se der erro no login, só mostra o erro e sai
     toast.add({
       severity: 'error',
       summary: 'Falha no login',
       detail: 'Usuário ou senha inválidos.',
       life: 3000
     });
-  } finally {
     loading.value = false;
+    return;
   }
+
+  // 2) Se chegou aqui, login foi OK
+  toast.add({
+    severity: 'success',
+    summary: 'Login realizado',
+    life: 2000
+  });
+
+  // 3) Redireciona e ignora qualquer errozinho de navegação
+  router.push({ name: 'contatos' }).catch(() => {});
+
+  loading.value = false;
 }
 </script>
 
