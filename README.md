@@ -1,5 +1,5 @@
 
-# 📘 Agenda — CQRS • JWT • RabbitMQ • Vue 3 • Docker
+# Agenda — CQRS • JWT • RabbitMQ • Vue 3 • Docker
 
 Aplicação de **Agenda de Contatos**:
 
