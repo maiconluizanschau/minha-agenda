@@ -339,17 +339,3 @@ Serviços:
 | API       | http://localhost:5000     |
 | Swagger   | http://localhost:5000/swagger |
 | RabbitMQ  | http://localhost:15672    |
-
-### Fluxo sugerido para o avaliador
-
-1. Acessar o frontend em `http://localhost:5173`.
-2. Logar como `admin / P@ssw0rd`.
-3. Criar alguns contatos com e sem favoritos.
-4. Alternar o filtro “Mostrar só favoritos”.
-5. Verificar dashboards (totais/favoritos).
-6. Abrir o Swagger e testar os endpoints com Bearer Token.
-7. Abrir o painel do RabbitMQ e observar as filas:
-   - `agenda.contacts.created`
-   - `agenda.contacts.favorited`
-
----
