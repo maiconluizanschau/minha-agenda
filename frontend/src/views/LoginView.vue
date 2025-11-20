@@ -1,14 +1,14 @@
 <template>
   <div class="login-background">
     <Toast />
-    <div class="glass-login p-6 w-full max-w-sm animate__animated animate__fadeInUp">
-      <div class="flex items-center gap-3 mb-4">
-        <div class="w-9 h-9 rounded-md border border-gray-200 flex items-center justify-center" style="background:#eff6ff;">
-          <i class="pi pi-lock" style="color:#2563eb; font-size:1rem;"></i>
+    <div class="glass-login">
+      <div class="login-header">
+        <div class="login-icon">
+          <i class="pi pi-lock"></i>
         </div>
         <div>
-          <h2 class="m-0 text-lg font-semibold" style="color:#111827;">Bem-vindo à Agenda Pro</h2>
-          <p class="m-0 text-xs text-muted">
+          <h2 class="login-title">Bem-vindo à Agenda Pro</h2>
+          <p class="login-subtitle">
             Autentique-se para gerenciar seus contatos.
           </p>
         </div>
@@ -16,7 +16,7 @@
 
       <div class="p-fluid">
         <div class="field mb-3">
-          <label for="username" class="text-xs text-muted mb-1 block">Usuário</label>
+          <label for="username" class="login-label">Usuário</label>
           <InputText
             id="username"
             v-model="username"
@@ -25,7 +25,7 @@
         </div>
 
         <div class="field mb-4">
-          <label for="password" class="text-xs text-muted mb-1 block">Senha</label>
+          <label for="password" class="login-label">Senha</label>
           <Password
             id="password"
             v-model="password"
@@ -37,22 +37,23 @@
 
         <Button
           label="Entrar"
-          class="w-full"
+          class="login-button"
           @click="login"
           :loading="loading"
         />
 
-        <p class="mt-4 mb-0 text-xs text-muted">
+        <p class="login-demo">
           Usuários de demo:
           <br />
           <strong>admin / P@ssw0rd</strong> (Admin)
           <br />
-          <strong>user / P@ssw0rd</strong> (User - acesso negado ao CRUD)
+          <strong>user / P@ssw0rd</strong> (User – aApenas generico)
         </p>
       </div>
     </div>
   </div>
 </template>
+
 
 <script setup>
 import { ref } from 'vue';
@@ -83,8 +84,12 @@ async function login() {
     });
 
     const token = response.data.token;
+    const role = response.data.role;
     localStorage.setItem('token', token);
     localStorage.setItem('username', username.value);
+    if (role) {
+      localStorage.setItem('role', role);
+    }
 
     router.push({ name: 'Contacts' });
   } catch (error) {

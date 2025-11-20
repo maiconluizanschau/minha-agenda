@@ -18,6 +18,8 @@ using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
+const string CorsPolicy = "AllowFrontend";
+
 // EF Core with SQLite
 builder.Services.AddDbContext<AgendaDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -43,6 +45,18 @@ builder.Services.AddControllers()
 
 builder.Services.AddTransient<IValidator<CreateContactDto>, CreateContactDtoValidator>();
 builder.Services.AddTransient<IValidator<UpdateContactDto>, UpdateContactDtoValidator>();
+
+// CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(CorsPolicy, policy =>
+    {
+        policy
+            .WithOrigins("http://localhost:5173")
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
 
 // Swagger + JWT
 builder.Services.AddEndpointsApiExplorer();
@@ -79,7 +93,8 @@ builder.Services.AddSwaggerGen(options =>
 
 // Authentication JWT
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
-var secretKey = jwtSettings["SecretKey"] ?? "super_secret_dev_key_change_me";
+// fallback aqui só por segurança, mas appsettings
+var secretKey = jwtSettings["SecretKey"] ?? "UltraSecure_Jwt_Key_Change_Me_123456789";
 
 builder.Services
     .AddAuthentication(options =>
@@ -113,19 +128,23 @@ builder.Services.AddAuthorization(options =>
 
 var app = builder.Build();
 
-// Garante que o banco SQLite e a tabela Contacts sejam criados
+// Apply migrations / create database on startup
 using (var scope = app.Services.CreateScope())
 {
-    var db = scope.ServiceProvider.GetRequiredService<Agenda.Api.Infrastructure.Data.AgendaDbContext>();
+    var db = scope.ServiceProvider.GetRequiredService<AgendaDbContext>();
     db.Database.EnsureCreated();
 }
 
 if (app.Environment.IsDevelopment())
 {
-    app.UseDeveloperExceptionPage();
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseCors(CorsPolicy);
+
+// Sem redirecionar pra HTTPS porque o compose expõe apenas HTTP (porta 5000)
+// app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
@@ -133,6 +152,5 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
-
 
 public partial class Program { }

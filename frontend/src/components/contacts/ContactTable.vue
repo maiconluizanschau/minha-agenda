@@ -11,8 +11,15 @@
       <template #body="slotProps">
         <div class="flex justify-center">
           <FavoriteStar
+            v-if="canManage"
             :active="slotProps.data.favorito"
             @toggle="$emit('toggleFavorite', slotProps.data)"
+          />
+          <i
+            v-else
+            class="pi pi-star-fill"
+            v-show="slotProps.data.favorito"
+            style="font-size: 0.9rem; color: #f59e0b;"
           />
         </div>
       </template>
@@ -24,7 +31,7 @@
 
     <Column header="Ações" style="width: 160px">
       <template #body="slotProps">
-        <div class="flex gap-2 justify-end">
+        <div class="flex gap-2 justify-end" v-if="canManage">
           <Button
             icon="pi pi-pencil"
             text
@@ -36,6 +43,9 @@
             text
             @click="$emit('delete', slotProps.data)"
           />
+        </div>
+        <div v-else class="text-xs text-muted text-right pr-2">
+          Somente leitura
         </div>
       </template>
     </Column>
@@ -53,6 +63,10 @@ defineProps({
   loading: {
     type: Boolean,
     default: false
+  },
+  canManage: {
+    type: Boolean,
+    default: true
   }
 });
 

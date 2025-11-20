@@ -6,17 +6,15 @@
           <i class="pi pi-calendar" style="font-size: 0.9rem; color: #2563eb;"></i>
         </div>
         <div>
-          <div class="navbar-title">Agenda Pro</div>
-          <div class="nav-subtitle">
-            CQRS · JWT · RabbitMQ · Vue 3
-          </div>
+          <div class="navbar-title">Agenda </div>
+          
         </div>
       </div>
 
       <div class="flex items-center gap-4">
         <span class="badge-pill flex items-center gap-1">
           <i class="pi pi-shield"></i>
-          Admin
+          {{ roleLabel }}
         </span>
         <div class="flex items-center gap-2">
           <div class="nav-avatar">
@@ -42,10 +40,17 @@ const props = defineProps({
   username: {
     type: String,
     default: 'usuário'
+  },
+  role: {
+    type: String,
+    default: 'User'
   }
 });
 
+
 defineEmits(['logout']);
+
+const roleLabel = computed(() => props.role || 'User');
 
 const initials = computed(() => {
   if (!props.username) return '?';

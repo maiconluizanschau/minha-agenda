@@ -44,7 +44,8 @@ namespace Agenda.Api.Controllers
             return Ok(new LoginResponseDto
             {
                 Token = token,
-                Username = request.Username
+                Username = request.Username,
+                Role = userInfo.Role
             });
         }
     }
