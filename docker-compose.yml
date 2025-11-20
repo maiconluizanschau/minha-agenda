@@ -1,22 +1,33 @@
-version: '3.8'
+version: '3.9'
 
 services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: agenda-rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    restart: unless-stopped
+
   api:
-    build:
-      context: .
-      dockerfile: src/Agenda.Api/Dockerfile
-    container_name: agenda-api
+    build: ./backend
+    depends_on:
+      - rabbitmq
     ports:
       - "5000:8080"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+    restart: unless-stopped
 
-  web:
-    build:
-      context: ./frontend/agenda-web
-      dockerfile: Dockerfile
-    container_name: agenda-web
+  frontend:
+    build: ./frontend
     ports:
-      - "5173:80"
+      - "5173:5173"
+    environment:
+      - VITE_API_BASE_URL=http://localhost:5000/api
     depends_on:
       - api
+    restart: unless-stopped
