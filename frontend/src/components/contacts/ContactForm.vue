@@ -40,7 +40,7 @@
 
     <template #footer>
       <Button label="Cancelar" text @click="onCancel" />
-      <Button label="Salvar" @click="onSave" />
+      <Button label="Salvar" data-test="save-contact" @click="onSave" />
     </template>
   </Dialog>
 </template>

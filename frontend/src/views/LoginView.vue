@@ -7,7 +7,7 @@
           <i class="pi pi-lock"></i>
         </div>
         <div>
-          <h2 class="login-title">Bem-vindo à Agenda Pro</h2>
+          <h2 class="login-title">Bem-vindo à Agenda</h2>
           <p class="login-subtitle">
             Autentique-se para gerenciar seus contatos.
           </p>
@@ -47,7 +47,7 @@
           <br />
           <strong>admin / P@ssw0rd</strong> (Admin)
           <br />
-          <strong>user / P@ssw0rd</strong> (User – aApenas generico)
+          <strong>user / P@ssw0rd</strong> (User – Apenas generico)
         </p>
       </div>
     </div>

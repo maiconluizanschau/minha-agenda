@@ -3,6 +3,7 @@
     class="pi favorite-icon"
     :class="iconClass"
     :style="iconStyle"
+    data-test="favorite-button"
     @click="$emit('toggle')"
   />
 </template>
